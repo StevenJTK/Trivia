@@ -16,11 +16,10 @@ public class DiscordAPI implements EventListener {
 
     // We instance JDA here so that other methods can have access.
     private JDA jda;
-
+    private final String BOT_TOKEN = System.getenv("VARIABLE_NAME");
 
     /**
      * Method handling for API connection.
-     * @param token - takes token as a parameter for improved security.
      * @throws InterruptedException - we throw this in case awaitReady is interrupted.
      * @implNote LoginException - Sought to implement LoginException, however this is not needed as modern JDA versions handle token errors
      * internally.
@@ -30,8 +29,8 @@ public class DiscordAPI implements EventListener {
      * the connection is established can other blocks of code run.
      */
 
-    public void connectToAPI(String token) throws InterruptedException {
-        jda = JDABuilder.createDefault(token)
+    public void connectToAPI() throws InterruptedException {
+        jda = JDABuilder.createDefault(BOT_TOKEN)
                 .addEventListeners(this)
                 .build();
 
