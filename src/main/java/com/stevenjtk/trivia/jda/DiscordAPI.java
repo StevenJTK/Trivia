@@ -6,8 +6,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 
-import javax.security.auth.login.LoginException;
-
 
 /*
 / Class dedicated for connecting to the Java Discord API (JDA) and handle events.
@@ -16,7 +14,7 @@ public class DiscordAPI implements EventListener {
 
     // We instance JDA here so that other methods can have access.
     private JDA jda;
-    private final String BOT_TOKEN = System.getenv("VARIABLE_NAME");
+    private final String BOT_TOKEN = System.getenv("BOT_TOKEN");
 
     /**
      * Method handling for API connection.
@@ -30,7 +28,7 @@ public class DiscordAPI implements EventListener {
      */
 
     public void connectToAPI() throws InterruptedException {
-        jda = JDABuilder.createDefault(BOT_TOKEN)
+        jda = JDABuilder.createDefault(BOT_TOKEN + System.getenv("BOT_TOKEN"))
                 .addEventListeners(this)
                 .build();
 
