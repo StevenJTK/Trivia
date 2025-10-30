@@ -32,5 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-### App Properties ###
+### Misc ###
 .application.properties
+.gitattributes
+.mvn
