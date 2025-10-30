@@ -1,20 +1,19 @@
 package com.stevenjtk.trivia.jda;
-
-
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
-
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 /*
 / Class dedicated for connecting to the Java Discord API (JDA) and handle events.
 */
-public class DiscordAPI implements EventListener {
 
-    // We instance JDA here so that other methods can have access.
+public class DiscordAPI extends ListenerAdapter implements Listener {
+
     private JDA jda;
-    private final String BOT_TOKEN = System.getenv("BOT_TOKEN");
+    Dotenv dotenv = Dotenv.load();
+    private final String BOT_TOKEN = dotenv.get("BOT_TOKEN");
 
     /**
      * Method handling for API connection.
@@ -27,8 +26,8 @@ public class DiscordAPI implements EventListener {
      * the connection is established can other blocks of code run.
      */
 
-    public void connectToAPI() throws InterruptedException {
-        jda = JDABuilder.createDefault(BOT_TOKEN + System.getenv("BOT_TOKEN"))
+    public void connectToAPI() throws InterruptedException  {
+        jda = JDABuilder.createDefault(BOT_TOKEN)
                 .addEventListeners(this)
                 .build();
 
@@ -37,8 +36,7 @@ public class DiscordAPI implements EventListener {
     }
 
     @Override
-    public void onEvent(GenericEvent event) {
-        if(event instanceof ReadyEvent)
-            System.out.println("API is connected.");
+    public void onReady(ReadyEvent event) {
+        System.out.println("API is connected.");
     }
 }
