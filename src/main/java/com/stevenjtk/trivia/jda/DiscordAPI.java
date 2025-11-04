@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 / Class dedicated for connecting to the Java Discord API (JDA) and handle events.
 */
 
-public class DiscordAPI extends ListenerAdapter implements Listener {
+public class DiscordAPI extends ListenerAdapter {
 
     private JDA jda;
     Dotenv dotenv = Dotenv.load();
