@@ -39,4 +39,5 @@ public class DiscordAPI extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         System.out.println("API is connected.");
     }
+
 }
