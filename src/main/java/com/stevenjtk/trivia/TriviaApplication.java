@@ -1,6 +1,9 @@
 package com.stevenjtk.trivia;
 
+import com.stevenjtk.trivia.commands.BotCommands;
 import com.stevenjtk.trivia.jda.DiscordAPI;
+import io.github.cdimascio.dotenv.Dotenv;
+import net.dv8tion.jda.api.JDABuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,12 +12,16 @@ public class TriviaApplication {
 
 	public static void main(String[] args) throws InterruptedException {
 
+		Dotenv dotenv = Dotenv.load();
+		String token = dotenv.get("BOT_TOKEN");
+
+		JDABuilder.createDefault(token)
+						.addEventListeners(new BotCommands())
+								.build();
+
 		SpringApplication.run(TriviaApplication.class, args);
-
 		DiscordAPI api = new DiscordAPI();
-
 		api.connectToAPI();
 
 	}
-
 }

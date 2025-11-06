@@ -15,7 +15,7 @@ public class BotCommands extends ListenerAdapter {
         Guild guild = event.getGuild();
 
         guild.updateCommands().addCommands(
-                Commands.slash("echo", "Repeats messages back to you")
+                Commands.slash("stevetest", "Says Steve is a goofygoober")
                         .addOption(OptionType.STRING, "message", "The message to repeat")
                         .addOption(OptionType.INTEGER, "times", "The number of times to repeat the message.")
                         .addOption(OptionType.BOOLEAN, "ephemeral", "Whether or not the message should be sent as an ephemeral message."),
