@@ -17,6 +17,8 @@ public class BotCommands extends ListenerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(BotCommands.class);
 
+    BotCommands cmd = new BotCommands();
+
     @Override
     public void onGuildReady(GuildReadyEvent event) {
         Guild guild = event.getGuild();
@@ -35,7 +37,6 @@ public class BotCommands extends ListenerAdapter {
                                                 .addChoice("Fanatic", "fanatic")
                                                 .addChoice("Test", "test")
                                 )).
-
                 queue();
     }
 

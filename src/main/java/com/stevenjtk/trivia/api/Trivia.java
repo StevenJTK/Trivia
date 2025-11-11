@@ -1,7 +1,6 @@
 package com.stevenjtk.trivia.api;
 
 public enum Trivia {
-    CATEGORY,
     ID,
     TAGS,
     DIFFICULTY,

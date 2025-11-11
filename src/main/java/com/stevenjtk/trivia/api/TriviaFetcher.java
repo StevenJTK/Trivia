@@ -1,7 +1,5 @@
 package com.stevenjtk.trivia.api;
 
-import com.stevenjtk.trivia.commands.TriviaResponse;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
