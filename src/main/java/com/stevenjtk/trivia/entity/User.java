@@ -41,11 +41,12 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
 
-    private Set<Roles> role = new HashSet<>();
+
+    private Set<Roles> roles = new HashSet<>();
 
 
     public Set<Roles> getAllRoles() {
-        return role;
+        return roles;
     }
 
     public Integer getId() {
