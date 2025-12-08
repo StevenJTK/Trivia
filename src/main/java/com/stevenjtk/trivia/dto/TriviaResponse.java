@@ -6,6 +6,8 @@ public class TriviaResponse {
     private int response;
     private List<TriviaQuestion> results;
 
+    TriviaResponse() {}
+
     public int getResponse() {
         return response;
     }
