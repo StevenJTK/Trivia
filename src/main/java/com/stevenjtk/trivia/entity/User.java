@@ -31,7 +31,7 @@ public class User {
     }
 
     /**
-     * This creates a parent table that binds Role to User
+     * This creates a parent table in the database that binds Role to User
      * Allowing admins to verify which roles and permissions a user has
      */
     @ManyToMany(fetch = FetchType.EAGER)
