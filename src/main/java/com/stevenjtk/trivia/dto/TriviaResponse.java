@@ -2,7 +2,11 @@ package com.stevenjtk.trivia.dto;
 
 import java.util.List;
 
+/**
+ * Class focuses on responding to trivia requests
+ */
 public class TriviaResponse {
+
     private int response;
     private List<TriviaQuestion> results;
 

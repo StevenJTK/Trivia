@@ -22,6 +22,7 @@ public class Roles {
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<User>();
 
+    // Getters and Setters
     public Integer getId() {
         return this.id;
     }

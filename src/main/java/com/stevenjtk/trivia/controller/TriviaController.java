@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TriviaController {
     TriviaService triviaService;
 
+    /**
+     * Mapping for fetching Trivia by calling the service class that has been
+     * wired to fetch the questions.
+     */
+
     @GetMapping("/trivia")
     public TriviaResponse getTrivia() {
         return triviaService.getQuestions();

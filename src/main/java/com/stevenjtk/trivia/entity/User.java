@@ -1,12 +1,11 @@
 package com.stevenjtk.trivia.entity;
 
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "trivia_user")
 public class User {
 
     @Id
@@ -44,10 +43,12 @@ public class User {
 
     private Set<Roles> roles = new HashSet<>();
 
-
     public Set<Roles> getAllRoles() {
         return roles;
     }
+
+
+    // Getters and Setters Section
 
     public Integer getId() {
         return id;

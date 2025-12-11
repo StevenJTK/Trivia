@@ -1,5 +1,9 @@
 package com.stevenjtk.trivia.dto;
 
+/**
+ * Required Enum from the API
+ * Link: https://the-trivia-api.com/docs/v2/
+ */
 public enum Category {
     MUSIC,
     SPORT_AND_LEISURE,

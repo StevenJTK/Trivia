@@ -2,6 +2,11 @@ package com.stevenjtk.trivia.dto;
 
 import java.util.List;
 
+/**
+ * Behaves as the Question Model that the API has requested
+ * Link: https://the-trivia-api.com/docs/v2/
+ */
+
 public class TriviaQuestion {
     private String category;
     private String id;
