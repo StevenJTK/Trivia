@@ -1,12 +1,19 @@
 package com.stevenjtk.trivia.controller;
 
+import com.stevenjtk.trivia.dto.TriviaQuestion;
 import com.stevenjtk.trivia.dto.TriviaResponse;
 import com.stevenjtk.trivia.service.TriviaService;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.List;
+
+@RestController
 public class TriviaController {
+
+    @Autowired
     TriviaService triviaService;
 
     /**
@@ -14,8 +21,8 @@ public class TriviaController {
      * wired to fetch the questions.
      */
 
-    @GetMapping("/trivia")
-    public TriviaResponse getTrivia() {
+    @GetMapping("/questions")
+    public List<TriviaQuestion> getTrivia() {
         return triviaService.getQuestions();
     }
 }

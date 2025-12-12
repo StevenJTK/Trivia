@@ -8,18 +8,19 @@ import java.util.List;
  */
 
 public class TriviaQuestion {
-    private String category;
+    private Category category;
     private String id;
     private List<String> tags;
-    private String difficulty;
-    private boolean isNiche = false;
-    private TriviaResponse question;
+    private Difficulty difficulty;
+    private boolean isNiche;
+    private Question question;
     private String correctAnswer;
     private List<String> incorrectAnswers;
     private String type;
 
 
-    public String getCategory() {
+
+    public Category getCategory() {
         return category;
     }
 
@@ -31,7 +32,7 @@ public class TriviaQuestion {
         return tags;
     }
 
-    public String getDifficulty() {
+    public Difficulty getDifficulty() {
         return difficulty;
     }
 
@@ -39,7 +40,7 @@ public class TriviaQuestion {
         return isNiche;
     }
 
-    public TriviaResponse getQuestion() {
+    public Question getQuestion() {
         return question;
     }
 
@@ -55,7 +56,7 @@ public class TriviaQuestion {
         return type;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -66,13 +67,13 @@ public class TriviaQuestion {
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
-    public void setDifficulty(String difficulty) {
+    public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
     }
     public void setNiche(boolean isNiche) {
         this.isNiche = isNiche;
     }
-    public void setQuestion(TriviaResponse question) {
+    public void setQuestion(Question question) {
         this.question = question;
     }
     public void setCorrectAnswer(String correctAnswer) {
@@ -84,11 +85,6 @@ public class TriviaQuestion {
     public void setType(String type) {
         this.type = type;
     }
-
-
-
-
-
 }
 
 
