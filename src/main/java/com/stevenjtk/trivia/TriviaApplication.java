@@ -11,17 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TriviaApplication {
 
 	public static void main(String[] args) throws InterruptedException {
-
-		Dotenv dotenv = Dotenv.load();
-		String token = dotenv.get("BOT_TOKEN");
-
-		JDABuilder.createDefault(token)
-						.addEventListeners(new BotCommands())
-								.build();
-
 		SpringApplication.run(TriviaApplication.class, args);
-		DiscordAPI api = new DiscordAPI();
-		api.connectToAPI();
 
 	}
 }
