@@ -23,6 +23,7 @@ public class TriviaService {
         TriviaQuestion[] questions = restTemplate.getForObject(API_URL, TriviaQuestion[].class);
         if (questions != null) {
             for (TriviaQuestion q : questions) {
+
                 System.out.println("Question: " + q.getQuestion());
                 System.out.println("Correct Answer: " + q.getCorrectAnswer());
                 System.out.println("Incorrect Answers: " + q.getIncorrectAnswers());

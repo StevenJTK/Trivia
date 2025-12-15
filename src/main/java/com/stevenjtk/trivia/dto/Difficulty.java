@@ -11,10 +11,9 @@ public enum Difficulty {
     MEDIUM,
     HARD;
 
-
-    @JsonCreator
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static Difficulty fromValue(final String value) {
-        if(value != null) return null;
+        if(value == null) return null;
         {
             return switch(value.toLowerCase()) {
                 case "easy" -> EASY;

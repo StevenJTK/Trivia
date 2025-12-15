@@ -21,9 +21,9 @@ public enum Category {
     FOOD_AND_DRINK,
     GENERAL_KNOWLEDGE;
 
-    @JsonCreator
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static Category fromValue(String value) {
-        if (value != null) return null;
+        if (value == null) return null;
         {
             return switch (value.toLowerCase()) {
                 case "music" -> MUSIC;
