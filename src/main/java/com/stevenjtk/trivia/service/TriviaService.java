@@ -34,4 +34,9 @@ public class TriviaService {
         }
         return questions != null ? Arrays.asList(questions) : List.of();
     }
+
+
+    public List fetchQuestion() {
+        return  getQuestions();
+    }
 }
