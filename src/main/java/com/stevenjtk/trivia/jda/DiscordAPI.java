@@ -1,9 +1,10 @@
 package com.stevenjtk.trivia.jda;
-import com.stevenjtk.trivia.commands.BotCommands;
+import com.stevenjtk.trivia.commands.MessageListener;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.PostConstruct;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +18,13 @@ import javax.security.auth.login.LoginException;
 public class DiscordAPI {
 
     private JDA jda;
-    private final BotCommands botCommands;
+    private final MessageListener messageListener;
     private final String BOT_TOKEN;
     private final Dotenv dotenv;
 
     @Autowired
-    public DiscordAPI(BotCommands botCommands, Dotenv dotenv) throws LoginException, InterruptedException {
-        this.botCommands = botCommands;
+    public DiscordAPI(MessageListener messageListener, Dotenv dotenv) throws LoginException, InterruptedException {
+        this.messageListener = messageListener;
         this.BOT_TOKEN = dotenv.get("BOT_TOKEN");
         this.dotenv = dotenv;
     }
@@ -31,9 +32,9 @@ public class DiscordAPI {
     @PostConstruct
     public void connectToAPI() throws Exception {
         String BOT_TOKEN = dotenv.get("BOT_TOKEN");
-
         jda = JDABuilder.createDefault(BOT_TOKEN)
-                .addEventListeners(botCommands)
+                .enableIntents(GatewayIntent.MESSAGE_CONTENT)
+                .addEventListeners(messageListener)
                 .build();
 
         jda.awaitReady();

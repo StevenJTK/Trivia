@@ -1,9 +1,5 @@
 package com.stevenjtk.trivia;
 
-import com.stevenjtk.trivia.commands.BotCommands;
-import com.stevenjtk.trivia.jda.DiscordAPI;
-import io.github.cdimascio.dotenv.Dotenv;
-import net.dv8tion.jda.api.JDABuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
