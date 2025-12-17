@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -25,12 +27,25 @@ public class TriviaService {
         if (questions != null) {
             for (TriviaQuestion q : questions) {
                 System.out.println("Question: " + q.getQuestion().getText());
-                System.out.println("Options: " + q.getIncorrectAnswers() + q.getCorrectAnswer());
+                System.out.println("Options: " + shuffleAnswers(q));
                 System.out.println("End");
             }
         } else {
             System.out.println("Questions could not be fetched from this API");
         }
         return questions != null ? Arrays.asList(questions) : List.of();
+    }
+
+    public List<String> shuffleAnswers(TriviaQuestion question) {
+       List<String> answers = new ArrayList<>();
+
+       answers.add(question.getCorrectAnswer());
+       if(question.getIncorrectAnswers() != null) {
+           answers.addAll(question.getIncorrectAnswers());
+       }
+
+       Collections.shuffle(answers);
+
+        return answers;
     }
 }

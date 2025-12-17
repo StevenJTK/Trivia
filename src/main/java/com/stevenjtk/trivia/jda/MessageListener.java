@@ -1,4 +1,4 @@
-package com.stevenjtk.trivia.commands;
+package com.stevenjtk.trivia.jda;
 
 import com.stevenjtk.trivia.dto.TriviaQuestion;
 import com.stevenjtk.trivia.service.TriviaService;
@@ -36,15 +36,26 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("trivia")) {
+            event.deferReply().queue();
+
             List<TriviaQuestion> questions = triviaService.getQuestions();
+            TriviaQuestion random = questions.get(new Random().nextInt(questions.size()));
+            List<String> options = triviaService.shuffleAnswers(random);
+
             if(questions.isEmpty()) {
                 event.reply("Could not fetch questions").queue();
                 return;
 
             }
-            TriviaQuestion random = questions.get(new Random().nextInt(questions.size()));
+
+            StringBuilder message = new StringBuilder();
+            message.append("Question: ").append(random.getQuestion().getText()).append("\n");
+            message.append("Options:\n");
+            for (int i = 0; i < options.size(); i++) {
+                message.append(i + 1).append(". ").append(options.get(i)).append("\n");
+            }
             activeTrivia.put(event.getChannel().getId(), random);
-            event.reply("Question: " + random.getQuestion().getText() + "\nDifficulty: " + random.getDifficulty()).queue();
+            event.getHook().sendMessage(message.toString()).queue();
         }
     }
 
@@ -63,12 +74,12 @@ public class MessageListener extends ListenerAdapter {
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + "Correct!").queue();
             activeTrivia.remove(channelId);
 
-        } else if(message.equals("test")) {
+        } else if(message.equals("!answer")) {
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + "The answer is: " + active.getCorrectAnswer()).queue();
             activeTrivia.remove(channelId);
 
         } else  {
-            event.getChannel().sendMessage(event.getAuthor().getAsMention() + "Incorrect! Run it back.").queue();
+            event.getChannel().sendMessage(event.getAuthor().getAsMention() + "Incorrect! Try again or write !answer to give up.").queue();
         }
     }
 }

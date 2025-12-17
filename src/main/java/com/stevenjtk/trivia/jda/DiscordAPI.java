@@ -1,5 +1,4 @@
 package com.stevenjtk.trivia.jda;
-import com.stevenjtk.trivia.commands.MessageListener;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.PostConstruct;
 import net.dv8tion.jda.api.JDA;
