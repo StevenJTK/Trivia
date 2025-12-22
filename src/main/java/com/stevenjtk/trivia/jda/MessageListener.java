@@ -2,6 +2,8 @@ package com.stevenjtk.trivia.jda;
 
 import com.stevenjtk.trivia.dto.TriviaQuestion;
 import com.stevenjtk.trivia.service.TriviaService;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -20,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MessageListener extends ListenerAdapter {
 
     private final Map<String, TriviaQuestion> activeTrivia = new ConcurrentHashMap<>();
+    private final Map<Long, GameState> activeGames = new ConcurrentHashMap<>();
 
     @Autowired
     TriviaService triviaService;
@@ -28,7 +31,8 @@ public class MessageListener extends ListenerAdapter {
     public void onGuildReady(GuildReadyEvent event) {
         Guild guild = event.getGuild();
         guild.updateCommands().addCommands(
-                Commands.slash("trivia", "Get a trivia question")
+                Commands.slash("trivia", "Get a trivia question"),
+                Commands.slash("hello", "Button Test")
         ).queue();
 
     }
@@ -36,17 +40,27 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("trivia")) {
+            long userId = event.getUser().getIdLong();
             event.deferReply().queue();
 
-            List<TriviaQuestion> questions = triviaService.getQuestions();
+            GameState state = activeGames.get(userId);
+
+            if(activeGames.containsKey(userId)) {
+                event.getHook().sendMessage("No hijacking")
+                        .setEphemeral(true).queue();
+                return;
+            }
+            List<TriviaQuestion> questions = triviaService.getQuestions(userId);
+            if(questions.isEmpty()) {
+                event.getHook().sendMessage("Could not fetch questions").queue();
+                return;
+            }
+
+            GameState newState = new GameState(userId, questions);
+            activeGames.put(userId, newState);
+
             TriviaQuestion random = questions.get(new Random().nextInt(questions.size()));
             List<String> options = triviaService.shuffleAnswers(random);
-
-            if(questions.isEmpty()) {
-                event.reply("Could not fetch questions").queue();
-                return;
-
-            }
 
             StringBuilder message = new StringBuilder();
             message.append("Question: ").append(random.getQuestion().getText()).append("\n");
@@ -57,16 +71,26 @@ public class MessageListener extends ListenerAdapter {
             activeTrivia.put(event.getChannel().getId(), random);
             event.getHook().sendMessage(message.toString()).queue();
         }
+
+        if (event.getName().equals("hello")) {
+            event.reply("Click here")
+                    .setComponents(ActionRow.of(Button.primary("hello", "Click here"))).queue();
+        }
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(event.getAuthor().isBot()) return;
+
+        long userId = event.getAuthor().getIdLong();
+        GameState game = activeGames.get(userId);
 
         String channelId = event.getChannel().getId();
         String message = event.getMessage().getContentRaw().trim().toLowerCase();
 
+
         TriviaQuestion active = activeTrivia.get(channelId);
+
+        if(event.getAuthor().isBot()) return;
 
         if(active == null) return;
 

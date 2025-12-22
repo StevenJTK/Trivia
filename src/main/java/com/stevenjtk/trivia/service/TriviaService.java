@@ -22,7 +22,7 @@ public class TriviaService {
        this.restTemplate = restTemplate;
     }
 
-    public List<TriviaQuestion> getQuestions() {
+    public List<TriviaQuestion> getQuestions(long userId) {
         TriviaQuestion[] questions = restTemplate.getForObject(API_URL, TriviaQuestion[].class);
         if (questions != null) {
             for (TriviaQuestion q : questions) {
