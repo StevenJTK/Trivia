@@ -1,6 +1,7 @@
 package com.stevenjtk.trivia.jda;
 
 import com.stevenjtk.trivia.dto.TriviaQuestion;
+import com.stevenjtk.trivia.dto.TriviaStart;
 import com.stevenjtk.trivia.service.TriviaService;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -14,14 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 
 @Component
 public class MessageListener extends ListenerAdapter {
 
-    private final Map<String, TriviaQuestion> activeTrivia = new ConcurrentHashMap<>();
+    private final Map<Long, TriviaStart> activeTrivia = new ConcurrentHashMap<>();
     private final Map<Long, GameState> activeGames = new ConcurrentHashMap<>();
 
     @Autowired
@@ -43,32 +43,25 @@ public class MessageListener extends ListenerAdapter {
             long userId = event.getUser().getIdLong();
             event.deferReply().queue();
 
-            GameState state = activeGames.get(userId);
+            TriviaStart result = triviaService.startGame(userId, event.getChannel().getIdLong());
 
-            if(activeGames.containsKey(userId)) {
-                event.getHook().sendMessage("No hijacking")
-                        .setEphemeral(true).queue();
-                return;
-            }
-            List<TriviaQuestion> questions = triviaService.getQuestions(userId);
-            if(questions.isEmpty()) {
-                event.getHook().sendMessage("Could not fetch questions").queue();
+            if(!result.isSuccess()) {
+                event.getHook().sendMessage(result.getError()).setEphemeral(true).queue();
                 return;
             }
 
-            GameState newState = new GameState(userId, questions);
-            activeGames.put(userId, newState);
+            activeTrivia.put(userId, result);
+            activeGames.put(userId, new GameState(userId, result.getQuestions()));
 
-            TriviaQuestion random = questions.get(new Random().nextInt(questions.size()));
-            List<String> options = triviaService.shuffleAnswers(random);
+            TriviaQuestion question = result.getQuestions().get(0);
+            List<String> options = result.getOptions().get(question);
 
             StringBuilder message = new StringBuilder();
-            message.append("Question: ").append(random.getQuestion().getText()).append("\n");
+            message.append("Question: ").append(question.getQuestion().getText()).append("\n");
             message.append("Options:\n");
             for (int i = 0; i < options.size(); i++) {
                 message.append(i + 1).append(". ").append(options.get(i)).append("\n");
             }
-            activeTrivia.put(event.getChannel().getId(), random);
             event.getHook().sendMessage(message.toString()).queue();
         }
 
@@ -80,27 +73,29 @@ public class MessageListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-
         long userId = event.getAuthor().getIdLong();
-        GameState game = activeGames.get(userId);
+
+        if(event.getAuthor().isBot()) return;
 
         String channelId = event.getChannel().getId();
         String message = event.getMessage().getContentRaw().trim().toLowerCase();
 
+        TriviaStart activeGame = activeTrivia.get(userId);
+        if(activeGame == null) return;
 
-        TriviaQuestion active = activeTrivia.get(channelId);
+        TriviaQuestion question = activeGame.getQuestions().get(0);
+        String correctAnswer = question.getCorrectAnswer().toLowerCase();
 
-        if(event.getAuthor().isBot()) return;
 
-        if(active == null) return;
-
-        if(message.equals(active.getCorrectAnswer().toLowerCase())) {
-            event.getChannel().sendMessage(event.getAuthor().getAsMention() + "Correct!").queue();
-            activeTrivia.remove(channelId);
+        if(message.equals(correctAnswer)) {
+            event.getChannel().sendMessage(event.getAuthor().getAsMention() + " Correct!").queue();
+            activeTrivia.remove(userId);
+            triviaService.endGame(userId);
 
         } else if(message.equals("!answer")) {
-            event.getChannel().sendMessage(event.getAuthor().getAsMention() + "The answer is: " + active.getCorrectAnswer()).queue();
-            activeTrivia.remove(channelId);
+            event.getChannel().sendMessage(event.getAuthor().getAsMention() + "The answer is: " + question.getCorrectAnswer()).queue();
+            activeTrivia.remove(userId);
+            triviaService.endGame(userId);
 
         } else  {
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + "Incorrect! Try again or write !answer to give up.").queue();
