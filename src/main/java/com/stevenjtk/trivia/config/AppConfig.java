@@ -13,7 +13,7 @@ public class AppConfig {
 
     /**
     / RestTemplate is a provided class from the Spring Framework that simplifies HTTP requests and handling responses.
-    / It makes it easier to interact with RESTful web services as it abstracts away the boilerplate code.
+    / It makes it easier to interact with RESTful web services as it abstracts away the boilerplate code. Test comment.
     */
 
     @Bean
