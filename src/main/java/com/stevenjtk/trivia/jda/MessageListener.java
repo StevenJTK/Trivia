@@ -78,7 +78,7 @@ public class MessageListener extends ListenerAdapter {
         if(event.getAuthor().isBot()) return;
 
         String channelId = event.getChannel().getId();
-        String message = event.getMessage().getContentRaw().trim().toLowerCase();
+        String message = event.getMessage().getContentRaw().trim().toLowerCase().replaceAll("[^a-zA-Z0-9 ]", "");
 
         TriviaStart activeGame = activeTrivia.get(userId);
         if(activeGame == null) return;

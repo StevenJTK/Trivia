@@ -24,19 +24,10 @@ public class TriviaStart {
     }
 
 
-    public static TriviaStart success(TriviaQuestion question, List<String> options) {
-        return new TriviaStart(true,
-                null,
-                List.of(question),
-                Map.of(question, options));
-    }
-
-
     public static TriviaStart success(List<TriviaQuestion> questions,
                                       Map<TriviaQuestion, List<String>> optionsMap) {
         return new TriviaStart(true, null, questions, optionsMap);
     }
-
 
     public boolean isSuccess() {
         return success;
