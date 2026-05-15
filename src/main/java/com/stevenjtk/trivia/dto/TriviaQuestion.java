@@ -1,5 +1,8 @@
 package com.stevenjtk.trivia.dto;
 
+import com.stevenjtk.trivia.enums.Category;
+import com.stevenjtk.trivia.enums.Difficulty;
+
 import java.util.List;
 
 /**

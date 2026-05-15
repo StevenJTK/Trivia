@@ -1,4 +1,6 @@
-package com.stevenjtk.trivia.jda;
+package com.stevenjtk.trivia.api;
+import com.stevenjtk.trivia.listeners.ButtonListener;
+import com.stevenjtk.trivia.listeners.MessageListener;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.PostConstruct;
 import net.dv8tion.jda.api.JDA;

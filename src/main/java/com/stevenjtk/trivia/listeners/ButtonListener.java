@@ -1,4 +1,4 @@
-package com.stevenjtk.trivia.jda;
+package com.stevenjtk.trivia.listeners;
 
 
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;

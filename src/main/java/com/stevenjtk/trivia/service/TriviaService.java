@@ -3,7 +3,7 @@ package com.stevenjtk.trivia.service;
 import com.stevenjtk.trivia.dto.TriviaQuestion;
 
 import com.stevenjtk.trivia.dto.TriviaStart;
-import com.stevenjtk.trivia.jda.GameState;
+import com.stevenjtk.trivia.api.GameState;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +25,10 @@ public class TriviaService {
     @Autowired
     public TriviaService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+    }
+
+    public boolean hasActiveGame(long userId) {
+        return activeGames.containsKey(userId);
     }
 
     public TriviaStart startGame(long userId, long channelId) {

@@ -1,7 +1,10 @@
-package com.stevenjtk.trivia.jda;
+package com.stevenjtk.trivia.listeners;
 
 import com.stevenjtk.trivia.dto.TriviaQuestion;
 import com.stevenjtk.trivia.dto.TriviaStart;
+import com.stevenjtk.trivia.api.GameState;
+import com.stevenjtk.trivia.schedulers.DailyGamesReset;
+import com.stevenjtk.trivia.service.LimitService;
 import com.stevenjtk.trivia.service.TriviaService;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -27,6 +30,9 @@ public class MessageListener extends ListenerAdapter {
     @Autowired
     TriviaService triviaService;
 
+    @Autowired
+    LimitService limitService;
+
     @Override
     public void onGuildReady(GuildReadyEvent event) {
         Guild guild = event.getGuild();
@@ -42,6 +48,13 @@ public class MessageListener extends ListenerAdapter {
         if (event.getName().equals("trivia")) {
             long userId = event.getUser().getIdLong();
             event.deferReply().queue();
+
+            if(limitService.limitReached(userId)) {
+                event.getChannel().sendMessage(event.getUser().getAsMention() + "You have reached your daily limit. Come back tomorrow!").queue();
+                return;
+            }
+
+            limitService.recordGame(userId);
 
             TriviaStart result = triviaService.startGame(userId, event.getChannel().getIdLong());
 
@@ -74,7 +87,6 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         long userId = event.getAuthor().getIdLong();
-
         if(event.getAuthor().isBot()) return;
 
         String channelId = event.getChannel().getId();

@@ -1,4 +1,4 @@
-package com.stevenjtk.trivia.dto;
+package com.stevenjtk.trivia.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

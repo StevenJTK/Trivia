@@ -1,8 +1,6 @@
-package com.stevenjtk.trivia.dto;
+package com.stevenjtk.trivia.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 
 /**
