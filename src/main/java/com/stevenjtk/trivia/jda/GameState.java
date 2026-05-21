@@ -1,4 +1,4 @@
-package com.stevenjtk.trivia.api;
+package com.stevenjtk.trivia.jda;
 
 import com.stevenjtk.trivia.dto.TriviaQuestion;
 

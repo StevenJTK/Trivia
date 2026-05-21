@@ -3,7 +3,7 @@ package com.stevenjtk.trivia.service;
 import com.stevenjtk.trivia.dto.TriviaQuestion;
 
 import com.stevenjtk.trivia.dto.TriviaStart;
-import com.stevenjtk.trivia.api.GameState;
+import com.stevenjtk.trivia.jda.GameState;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

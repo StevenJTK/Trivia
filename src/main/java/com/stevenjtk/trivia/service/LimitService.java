@@ -21,7 +21,7 @@ public class LimitService {
         if (triviaService.hasActiveGame(userId)) return true;
 
         int gamesPlayed = dailyGameCount.getOrDefault(userId, 0);
-        return gamesPlayed >= 1;
+        return gamesPlayed >= 100;
    }
 
    public void recordGame(long userId) {
