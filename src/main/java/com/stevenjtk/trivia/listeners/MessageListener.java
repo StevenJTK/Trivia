@@ -1,13 +1,7 @@
 package com.stevenjtk.trivia.listeners;
 
-import com.stevenjtk.trivia.dto.TriviaQuestion;
-import com.stevenjtk.trivia.dto.TriviaStart;
-import com.stevenjtk.trivia.jda.GameState;
-import com.stevenjtk.trivia.service.LimitService;
-import com.stevenjtk.trivia.service.TriviaService;
+import com.stevenjtk.trivia.builders.MessageBuilder;
 import com.stevenjtk.trivia.commands.GameStart;
-import net.dv8tion.jda.api.components.actionrow.ActionRow;
-import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -17,7 +11,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import net.dv8tion.jda.api.components.buttons.Button;
 
 @Component
 public class MessageListener extends ListenerAdapter {
@@ -25,14 +19,19 @@ public class MessageListener extends ListenerAdapter {
     @Autowired
     GameStart gameStart;
 
+    @Autowired
+    ButtonListener buttonListener;
+
+    @Autowired
+    MessageBuilder messageBuilder;
+
     @Override
     public void onGuildReady(GuildReadyEvent event) {
         Guild guild = event.getGuild();
         guild.updateCommands().addCommands(
                 Commands.slash("trivia", "Get a trivia question"),
-                Commands.slash("play", "Play now!")
+                Commands.slash("play", "Play a game")
         ).queue();
-
     }
 
     @Override
@@ -40,13 +39,17 @@ public class MessageListener extends ListenerAdapter {
         gameStart.onGameStart(event);
 
         if (event.getName().equals("play")) {
-            event.reply("")
-                    .setComponents(ActionRow.of(Button.primary("play", "Click here"))).queue();
+            Button playButton = Button.primary("play", "Play!");
+
+            event.reply(
+                    messageBuilder.setContent("Click to play").addComponents(playButton).build()
+            ).queue();
         }
+
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         gameStart.onResponse(event);
     }
 }

@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class TriviaApplication {
 
-	public static void main(String[] args) throws InterruptedException {
-		SpringApplication.run(TriviaApplication.class, args);
+    public static void main(String[] args) throws InterruptedException {
+        SpringApplication.run(TriviaApplication.class, args);
 
-	}
+    }
 }
