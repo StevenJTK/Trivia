@@ -35,7 +35,7 @@ public class TriviaService {
     public TriviaStart startGame(long userId, long channelId) {
         if (activeGames.containsKey(userId)) {
             logger.info("User {} tried to answer a question while already having an active game session", userId);
-            return TriviaStart.error("You already have a game session. Type !answer if you want to give up");
+            return TriviaStart.error("You already have a game session. Type answer if you want to give up");
         }
 
         List<TriviaQuestion> questions = getQuestions();

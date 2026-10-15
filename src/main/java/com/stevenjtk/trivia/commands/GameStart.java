@@ -6,6 +6,7 @@ import com.stevenjtk.trivia.builders.EmbedBuilder;
 import com.stevenjtk.trivia.jda.GameState;
 import com.stevenjtk.trivia.service.LimitService;
 import com.stevenjtk.trivia.service.TriviaService;
+import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -28,34 +29,35 @@ public class GameStart extends ListenerAdapter {
     @Autowired
     TriviaService triviaService;
 
+    /* Things to add:
+    Multiple players at once causes a lot of clutter and confusion - see if you can create a seperate GUI for each player
+     */
+
 
     private Long getMessageEventUserId(MessageReceivedEvent event) {
         return event.getAuthor().getIdLong();
     }
 
-    private Long getSlashEventUserId(SlashCommandInteractionEvent event) {
+    private Long getEventUserId(IReplyCallback event) {
         return event.getUser().getIdLong();
     }
 
-    public void onGameStart(SlashCommandInteractionEvent event) {
-        if (event.getName().equals("trivia")) {
+    public void onGameStart(IReplyCallback event) {
+        if (event.getUser().isBot()) return;
+        {
+
             event.deferReply().queue();
 
-            if (limitService.limitReached(getSlashEventUserId(event))) {
-                event.getChannel().sendMessage(event.getUser().getAsMention() + "You have reached your daily limit. Come back tomorrow!").queue();
-                return;
-            }
-
-            limitService.recordGame(getSlashEventUserId(event));
-            TriviaStart result = triviaService.startGame((getSlashEventUserId(event)), event.getChannel().getIdLong());
+            limitService.recordGame(getEventUserId(event));
+            TriviaStart result = triviaService.startGame((getEventUserId(event)), event.getChannel().getIdLong());
 
             if (!result.isSuccess()) {
                 event.getHook().sendMessage(result.getError()).setEphemeral(true).queue();
                 return;
             }
 
-            activePlayer.put(getSlashEventUserId(event), result);
-            activeGames.put(getSlashEventUserId(event), new GameState(getSlashEventUserId(event), result.getQuestions()));
+            activePlayer.put(getEventUserId(event), result);
+            activeGames.put(getEventUserId(event), new GameState(getEventUserId(event), result.getQuestions()));
 
             // Fetch Questions
             TriviaQuestion question = result.getQuestions().get(0);
