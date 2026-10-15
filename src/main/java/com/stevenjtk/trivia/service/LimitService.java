@@ -1,5 +1,6 @@
 package com.stevenjtk.trivia.service;
 
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LimitService {
 
     private final TriviaService triviaService;
-    private final Map<Long, Integer> dailyGameCount = new ConcurrentHashMap();
+    private final Map<Long, Integer> dailyGameCount = new ConcurrentHashMap<>();
 
     public LimitService(TriviaService triviaService) {
         this.triviaService = triviaService;

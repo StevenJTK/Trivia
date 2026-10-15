@@ -39,10 +39,10 @@ public class MessageListener extends ListenerAdapter {
         gameStart.onGameStart(event);
 
         if (event.getName().equals("play")) {
-            Button playButton = Button.primary("play", "Play!");
+            Button playButton = Button.primary("play", "Play now!");
 
             event.reply(
-                    messageBuilder.setContent("Click to play").addComponents(playButton).build()
+                    messageBuilder.setContent("").addComponents(playButton).build()
             ).queue();
         }
 

@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class GameStart extends ListenerAdapter {
 
-    private final Map<Long, TriviaStart> activeTrivia = new ConcurrentHashMap<>();
+    private final Map<Long, TriviaStart> activePlayer = new ConcurrentHashMap<>();
     private final Map<Long, GameState> activeGames = new ConcurrentHashMap<>();
 
     @Autowired
@@ -28,33 +28,36 @@ public class GameStart extends ListenerAdapter {
     @Autowired
     TriviaService triviaService;
 
-    @Autowired
-    EmbedBuilder embedBuilder;
 
+    private Long getMessageEventUserId(MessageReceivedEvent event) {
+        return event.getAuthor().getIdLong();
+    }
+
+    private Long getSlashEventUserId(SlashCommandInteractionEvent event) {
+        return event.getUser().getIdLong();
+    }
 
     public void onGameStart(SlashCommandInteractionEvent event) {
         if (event.getName().equals("trivia")) {
-            long userId = event.getUser().getIdLong();
             event.deferReply().queue();
 
-
-            if (limitService.limitReached(userId)) {
+            if (limitService.limitReached(getSlashEventUserId(event))) {
                 event.getChannel().sendMessage(event.getUser().getAsMention() + "You have reached your daily limit. Come back tomorrow!").queue();
                 return;
             }
 
-            limitService.recordGame(userId);
-
-            TriviaStart result = triviaService.startGame(userId, event.getChannel().getIdLong());
+            limitService.recordGame(getSlashEventUserId(event));
+            TriviaStart result = triviaService.startGame((getSlashEventUserId(event)), event.getChannel().getIdLong());
 
             if (!result.isSuccess()) {
                 event.getHook().sendMessage(result.getError()).setEphemeral(true).queue();
                 return;
             }
 
-            activeTrivia.put(userId, result);
-            activeGames.put(userId, new GameState(userId, result.getQuestions()));
+            activePlayer.put(getSlashEventUserId(event), result);
+            activeGames.put(getSlashEventUserId(event), new GameState(getSlashEventUserId(event), result.getQuestions()));
 
+            // Fetch Questions
             TriviaQuestion question = result.getQuestions().get(0);
             List<String> options = result.getOptions().get(question);
 
@@ -70,29 +73,26 @@ public class GameStart extends ListenerAdapter {
 
 
     public void onResponse(MessageReceivedEvent event) {
-        long userId = event.getAuthor().getIdLong();
         if (event.getAuthor().isBot()) return;
 
-        // Required to find the channel
-        String channelId = event.getChannel().getId();
-        String message = event.getMessage().getContentRaw().trim().toLowerCase().replaceAll("[^a-zA-Z0-9 ]", "");
+        String message = event.getMessage().getContentRaw().trim().toLowerCase().replaceAll("[^a-zA-Z0-9 ]", " ");
 
-        TriviaStart activeGame = activeTrivia.get(userId);
+        TriviaStart activeGame = activePlayer.get(getMessageEventUserId(event));
         if (activeGame == null) return;
 
         TriviaQuestion question = activeGame.getQuestions().get(0);
-        String correctAnswer = question.getCorrectAnswer().toLowerCase();
+        String correctAnswer = question.getCorrectAnswer().toLowerCase().replaceAll("[^a-zA-Z0-9]", " ");
 
 
         if (message.equals(correctAnswer)) {
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + " Correct!").queue();
-            activeTrivia.remove(userId);
-            triviaService.endGame(userId);
+            activePlayer.remove(getMessageEventUserId(event));
+            triviaService.endGame(getMessageEventUserId(event));
 
-        } else if (message.equals("!answer")) {
+        } else if (message.equals("answer")) {
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + "The answer is: " + question.getCorrectAnswer()).queue();
-            activeTrivia.remove(userId);
-            triviaService.endGame(userId);
+            activePlayer.remove(getMessageEventUserId(event));
+            triviaService.endGame(getMessageEventUserId(event));
 
         } else {
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + "Incorrect! Try again or write !answer to give up.").queue();

@@ -2,8 +2,6 @@ package com.stevenjtk.trivia.builders;
 
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
-
 @Component
 public class EmbedBuilder {
 

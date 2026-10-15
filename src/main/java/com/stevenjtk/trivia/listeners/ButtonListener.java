@@ -26,16 +26,15 @@ public class ButtonListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (event.getComponentId().equals("play")) {
-            embedBuilder.getEmbed().setTitle("Hello Gamer").setDescription("This is a desc").setAuthor("Steven").setColor(Color.PINK);
+            embedBuilder.getEmbed().setTitle("Welcome to the Trivia Game!").setDescription("Trivia Questions - Everyday!").setAuthor("Steven").setColor(Color.PINK);
 
-            Button dangerNoodle = Button.danger("yes-button", "DANGER NOODLE");
-            Button notDangerNoodle = Button.danger("no-button", "Not Danger Noodle");
+            Button exitButton = Button.danger("no-button", "Exit");
 
             event.reply(
                     messageBuilder
-                            .setContent("Hello")
-                            .setEmbeds(embedBuilder.getEmbed().setTitle("Hello Gamer").setDescription("This is a desc").setAuthor("Steven").setColor(Color.PINK).build())
-                            .addComponents(dangerNoodle, notDangerNoodle)
+                            .setContent(" ")
+                            .setEmbeds(embedBuilder.getEmbed().setTitle("Welcome to the Trivia Game!").setDescription("Daily Trivia Questions").setAuthor("StevenBot").setColor(Color.PINK).build())
+                            .addComponents(exitButton)
                             .build()
             ).queue();
 
